@@ -37,7 +37,18 @@ public class PluginConfiguration implements ReloadableConfig {
         public String profileImage = "";
         public String authorName = "";
         public String color = "#fff";
-        public List<String> messageContent = Arrays.asList("Gracz {PLAYER} zgłosił gracza {TARGET}", "Powód {REASON}");
+
+        @Description({
+                "#",
+                "# A content of the message sended to discord",
+                "#",
+                "# Placeholders -> ",
+                "# {REPORTED_BY} - Report sender name",
+                "# {USER} - Reported player",
+                "# {REASON} - Reason of the report",
+                "#"
+        })
+        public List<String> messageContent = Arrays.asList("Gracz {REPORTED_BY} zgłosił gracza {USER}", "Powód {REASON}");
     }
 
 

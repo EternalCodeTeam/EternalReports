@@ -29,13 +29,16 @@ dependencies {
     implementation("net.kyori:adventure-text-minimessage:4.11.0")
 
     // LiteCommands
-    implementation("dev.rollczi.litecommands:bukkit:2.5.0")
+    implementation("dev.rollczi.litecommands:bukkit-adventure:2.5.0")
 
     // Cdn
     implementation("net.dzikoysk:cdn:1.14.1")
 
     // bStats
     implementation("org.bstats:bstats-bukkit:3.0.0")
+
+    // io.github.mineflash07/discord-webhook
+    implementation("io.github.mineflash07:discord-webhook:1.0.1")
 }
 
 tasks.withType<JavaCompile> {
