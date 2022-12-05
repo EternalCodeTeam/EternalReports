@@ -4,7 +4,7 @@ plugins {
     id("java-library")
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
-    id("xyz.jpenilla.run-paper") version "1.0.6"
+    id("xyz.jpenilla.run-paper") version "2.0.0"
 }
 
 group = "com.eternalcode"
@@ -71,11 +71,11 @@ tasks.withType<ShadowJar> {
     archiveFileName.set("EternalReports v${project.version} (1.13+).jar")
 
     exclude(
-            "org/intellij/lang/annotations/**",
-            "org/jetbrains/annotations/**",
-            "org/checkerframework/**",
-            "META-INF/**",
-            "javax/**"
+        "org/intellij/lang/annotations/**",
+        "org/jetbrains/annotations/**",
+        "org/checkerframework/**",
+        "META-INF/**",
+        "javax/**"
     )
 
     mergeServiceFiles()
@@ -84,12 +84,12 @@ tasks.withType<ShadowJar> {
     val prefix = "com.eternalcode.eternalreports.libs"
 
     listOf(
-            "panda",
-            "org.panda_lang",
-            "org.bstats",
-            "net.dzikoysk",
-            "net.kyori",
-            "dev.rollczi"
+        "panda",
+        "org.panda_lang",
+        "org.bstats",
+        "net.dzikoysk",
+        "net.kyori",
+        "dev.rollczi"
     ).forEach { pack ->
         relocate(pack, "$prefix.$pack")
     }
