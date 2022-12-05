@@ -24,11 +24,11 @@ public class ReportCommand {
     private ConfigurationManager configurationManager;
 
     public ReportCommand(
-            Statistics statistics,
-            GlobalMessages messages,
-            NotificationManager notificationManager,
-            PluginConfiguration pluginConfiguration,
-            ConfigurationManager configurationManager
+        Statistics statistics,
+        GlobalMessages messages,
+        NotificationManager notificationManager,
+        PluginConfiguration pluginConfiguration,
+        ConfigurationManager configurationManager
     ) {
         this.statistics = statistics;
         this.messages = messages;
@@ -46,21 +46,22 @@ public class ReportCommand {
         }
 
         Bukkit.getOnlinePlayers()
-                .stream()
-                .filter(p -> p.hasPermission("eternalcode.report.recieve"))
-                .forEach(p -> {
-                    this.notificationManager.announceMessage(
-                            p.getUniqueId(),
-                            this.messages.userMessages.reportForAdministrator
-                                    .replace("{USER}", target.getName())
-                                    .replace("{REASON}", message)
-                                    .replace("{REPORTED_BY}", sender.getName())
-                    );
-                });
+            .stream()
+            .filter(p -> p.hasPermission("eternalcode.report.recieve"))
+            .forEach(p -> {
+                this.notificationManager.announceMessage(
+                    p.getUniqueId(),
+                    this.messages.userMessages.reportForAdministrator
+                        .replace("{USER}", target.getName())
+                        .replace("{REASON}", message)
+                        .replace("{REPORTED_BY}", sender.getName())
+                );
+            });
 
         this.notificationManager.announceMessage(sender.getUniqueId(), this.messages.userMessages.reportSend);
-        if (this.pluginConfiguration.discordSettings.enabled)
+        if (this.pluginConfiguration.discordSettings.enabled) {
             this.discordUtil.sendMessage(sender, target, message);
+        }
 
         this.statistics.addReport();
         this.configurationManager.save(this.statistics);
