@@ -26,10 +26,10 @@ dependencies {
 
     // Kyori Adventure
     implementation("net.kyori:adventure-platform-bukkit:4.1.2")
-    implementation("net.kyori:adventure-text-minimessage:4.11.0")
+    implementation("net.kyori:adventure-text-minimessage:4.12.0")
 
     // LiteCommands
-    implementation("dev.rollczi.litecommands:bukkit-adventure:2.6.0")
+    implementation("dev.rollczi.litecommands:bukkit-adventure:2.7.0")
 
     // Cdn
     implementation("net.dzikoysk:cdn:1.14.1")
@@ -71,11 +71,11 @@ tasks.withType<ShadowJar> {
     archiveFileName.set("EternalReports v${project.version} (1.13+).jar")
 
     exclude(
-        "org/intellij/lang/annotations/**",
-        "org/jetbrains/annotations/**",
-        "org/checkerframework/**",
-        "META-INF/**",
-        "javax/**"
+            "org/intellij/lang/annotations/**",
+            "org/jetbrains/annotations/**",
+            "org/checkerframework/**",
+            "META-INF/**",
+            "javax/**"
     )
 
     mergeServiceFiles()
@@ -84,13 +84,13 @@ tasks.withType<ShadowJar> {
     val prefix = "com.eternalcode.eternalreports.libs"
 
     listOf(
-        "panda",
-        "org.panda_lang",
-        "org.bstats",
-        "net.dzikoysk",
-        "net.kyori",
-        "dev.rollczi"
-    ).forEach{pack ->
+            "panda",
+            "org.panda_lang",
+            "org.bstats",
+            "net.dzikoysk",
+            "net.kyori",
+            "dev.rollczi"
+    ).forEach { pack ->
         relocate(pack, "$prefix.$pack")
     }
 }

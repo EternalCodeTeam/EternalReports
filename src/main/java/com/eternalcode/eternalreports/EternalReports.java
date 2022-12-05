@@ -1,14 +1,14 @@
 package com.eternalcode.eternalreports;
 
-import com.eternalcode.eternalreports.commands.ReportCommand;
-import com.eternalcode.eternalreports.commands.administrator.ReloadConfiguration;
-import com.eternalcode.eternalreports.commands.handlers.InvalidUsageHandler;
+import com.eternalcode.eternalreports.command.ReportCommand;
+import com.eternalcode.eternalreports.command.administrator.ReloadConfiguration;
+import com.eternalcode.eternalreports.command.handlers.InvalidUsageHandler;
 import com.eternalcode.eternalreports.configuration.ConfigurationManager;
 import com.eternalcode.eternalreports.configuration.PluginConfiguration;
 import com.eternalcode.eternalreports.data.Statistics;
-import com.eternalcode.eternalreports.messages.GlobalMessages;
-import com.eternalcode.eternalreports.messages.MessagesManager;
-import com.eternalcode.eternalreports.utils.NotificationManager;
+import com.eternalcode.eternalreports.message.GlobalMessages;
+import com.eternalcode.eternalreports.message.MessagesManager;
+import com.eternalcode.eternalreports.util.NotificationManager;
 import com.google.common.base.Stopwatch;
 import dev.rollczi.litecommands.LiteCommands;
 import dev.rollczi.litecommands.bukkit.adventure.platform.LiteBukkitAdventurePlatformFactory;
@@ -51,16 +51,16 @@ public class EternalReports extends JavaPlugin {
 
         this.configurationManager = new ConfigurationManager(this.getDataFolder());
         File messagesDir = new File(this.getDataFolder() + "/messages");
-        if(!messagesDir.exists()){
-            if(!messagesDir.mkdir()) {
+        if (!messagesDir.exists()) {
+            if (!messagesDir.mkdir()) {
                 this.getLogger().info("Error with creating messages directory");
                 this.getServer().getPluginManager().disablePlugin(this);
             }
         }
 
         File dataDirectory = new File(this.getDataFolder() + "/data");
-        if(!dataDirectory.exists()){
-            if(!dataDirectory.mkdir()) {
+        if (!dataDirectory.exists()) {
+            if (!dataDirectory.mkdir()) {
                 this.getLogger().info("Error with creating data directory");
                 this.getServer().getPluginManager().disablePlugin(this);
             }
@@ -115,39 +115,41 @@ public class EternalReports extends JavaPlugin {
                 .register();
 
         this.enableMetricts();
-        long millis = started.elapsed(TimeUnit.MILLISECONDS);
+        final long millis = started.elapsed(TimeUnit.MILLISECONDS);
         this.getLogger().info("EternalReports loaded in " + millis + "ms");
     }
 
     @Override
     public void onDisable() {
         this.liteCommands.getPlatform().unregisterAll();
-        if(this.audiences != null) {
+        if (this.audiences != null) {
             this.audiences.close();
             this.audiences = null;
         }
     }
 
     private void enableMetricts() {
-        Metrics metrics = new Metrics(this, 16483);
+        final Metrics metrics = new Metrics(this, 16483);
         metrics.addCustomChart(new SingleLineChart("users_reported_globally", () -> this.statistics.getReports()));
     }
 
     public PluginConfiguration getPluginConfiguration() {
-        return pluginConfiguration;
+        return this.pluginConfiguration;
     }
+
     public static EternalReports getEternalReports() {
         return eternalReports;
     }
+
     public MiniMessage getMiniMessage() {
         return this.miniMessage;
     }
-    public BukkitAudiences getAudiences()
-    {
-        return audiences;
+
+    public BukkitAudiences getAudiences() {
+        return this.audiences;
     }
-    public GlobalMessages getMessages()
-    {
+
+    public GlobalMessages getMessages() {
         return this.messages;
     }
 }
