@@ -1,11 +1,11 @@
-package com.eternalcode.eternalreports.command;
+package com.eternalcode.reports.command;
 
-import com.eternalcode.eternalreports.configuration.ConfigurationManager;
-import com.eternalcode.eternalreports.configuration.PluginConfiguration;
-import com.eternalcode.eternalreports.data.Statistics;
-import com.eternalcode.eternalreports.message.GlobalMessages;
-import com.eternalcode.eternalreports.util.DiscordUtil;
-import com.eternalcode.eternalreports.util.NotificationManager;
+import com.eternalcode.reports.configuration.ConfigurationManager;
+import com.eternalcode.reports.configuration.PluginConfiguration;
+import com.eternalcode.reports.data.Statistics;
+import com.eternalcode.reports.message.GlobalMessages;
+import com.eternalcode.reports.util.DiscordWebHookCreator;
+import com.eternalcode.reports.util.NotificationManager;
 import dev.rollczi.litecommands.argument.Arg;
 import dev.rollczi.litecommands.argument.Name;
 import dev.rollczi.litecommands.argument.joiner.Joiner;
@@ -17,9 +17,12 @@ import org.bukkit.entity.Player;
 @Route(name = "report", aliases = {"zglos"})
 public class ReportCommand {
     private Statistics statistics;
+
     private GlobalMessages messages;
     private NotificationManager notificationManager;
-    private DiscordUtil discordUtil;
+
+    private DiscordWebHookCreator discordWebHookCreator;
+
     private PluginConfiguration pluginConfiguration;
     private ConfigurationManager configurationManager;
 
@@ -32,7 +35,7 @@ public class ReportCommand {
     ) {
         this.statistics = statistics;
         this.messages = messages;
-        this.discordUtil = new DiscordUtil(pluginConfiguration);
+        this.discordWebHookCreator = new DiscordWebHookCreator(pluginConfiguration);
         this.notificationManager = notificationManager;
         this.pluginConfiguration = pluginConfiguration;
         this.configurationManager = configurationManager;
@@ -47,10 +50,10 @@ public class ReportCommand {
 
         Bukkit.getOnlinePlayers()
             .stream()
-            .filter(p -> p.hasPermission("eternalcode.report.recieve"))
-            .forEach(p -> {
+            .filter(player -> player.hasPermission("eternalcode.report.recieve"))
+            .forEach(player -> {
                 this.notificationManager.announceMessage(
-                    p.getUniqueId(),
+                    player.getUniqueId(),
                     this.messages.userMessages.reportForAdministrator
                         .replace("{USER}", target.getName())
                         .replace("{REASON}", message)
@@ -60,7 +63,7 @@ public class ReportCommand {
 
         this.notificationManager.announceMessage(sender.getUniqueId(), this.messages.userMessages.reportSend);
         if (this.pluginConfiguration.discordSettings.enabled) {
-            this.discordUtil.sendMessage(sender, target, message);
+            this.discordWebHookCreator.sendMessage(sender, target, message);
         }
 
         this.statistics.addReport();

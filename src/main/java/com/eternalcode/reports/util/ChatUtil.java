@@ -1,4 +1,4 @@
-package com.eternalcode.eternalreports.util;
+package com.eternalcode.reports.util;
 
 import org.bukkit.ChatColor;
 

@@ -46,7 +46,7 @@ tasks.withType<JavaCompile> {
 }
 
 bukkit {
-    main = "com.eternalcode.eternalreports.EternalReports"
+    main = "com.eternalcode.reports.EternalReports"
     apiVersion = "1.13"
     prefix = "EternalReports"
     author = "EternalCode"
@@ -81,7 +81,7 @@ tasks.withType<ShadowJar> {
     mergeServiceFiles()
     minimize()
 
-    val prefix = "com.eternalcode.eternalreports.libs"
+    val prefix = "com.eternalcode.reports.libs"
 
     listOf(
         "panda",

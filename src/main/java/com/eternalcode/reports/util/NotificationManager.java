@@ -1,4 +1,4 @@
-package com.eternalcode.eternalreports.util;
+package com.eternalcode.reports.util;
 
 import net.kyori.adventure.platform.AudienceProvider;
 import net.kyori.adventure.text.minimessage.MiniMessage;
