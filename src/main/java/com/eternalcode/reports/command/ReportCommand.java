@@ -48,7 +48,7 @@ public class ReportCommand {
             return;
         }
 
-        Bukkit.getOnlinePlayers()
+        this.server.getOnlinePlayers()
             .stream()
             .filter(player -> player.hasPermission("eternalcode.report.recieve"))
             .forEach(player -> {
