@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PluginConfiguration implements ReloadableConfig {
+
     @Description({
         "#",
         "# This is a main configuration file for EternalReports",
@@ -23,20 +24,24 @@ public class PluginConfiguration implements ReloadableConfig {
     })
     public Discord discordSettings = new Discord();
 
-
     @Contextual
     public static class Discord {
+
         @Description({
             "# Discord message configuration", "# If You want to disable this feature, set enabled to false"
         })
         @Description("Should the discord feature be enabled?")
         public boolean enabled = true;
+
         @Description("The webhook URL.")
         public String webhookUrl = "https://discord.com";
+
         @Description("The webhook profile image.")
         public String profileImage = "";
+
         @Description("The webhook author name")
         public String authorName = "";
+
         @Description("The webhook embed color.")
         public String color = "#fff";
 
@@ -52,8 +57,7 @@ public class PluginConfiguration implements ReloadableConfig {
         })
         public List<String> messageContent = Arrays.asList("Gracz {REPORTED_BY} zgłosił gracza {USER}", "Powód {REASON}");
     }
-
-
+    
     @Override
     public Resource resource(File folder) {
         return Source.of(folder, "config.yml");
