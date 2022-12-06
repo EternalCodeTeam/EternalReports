@@ -8,7 +8,7 @@ import dev.rollczi.litecommands.command.permission.Permission;
 import dev.rollczi.litecommands.command.route.Route;
 import org.bukkit.entity.Player;
 
-@Route(name = "er-reload", aliases = {"eternalreports-reload"})
+@Route(name = "er-reload", aliases = { "eternalreports-reload" })
 public class ReloadConfiguration {
     private ConfigurationManager configurationManager;
     private ConfigService messagesManager;
