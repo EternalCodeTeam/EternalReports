@@ -14,7 +14,7 @@ import dev.rollczi.litecommands.command.route.Route;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-@Route(name = "report", aliases = {"zglos"})
+@Route(name = "report", aliases = { "zglos" })
 public class ReportCommand {
     private Statistics statistics;
 
