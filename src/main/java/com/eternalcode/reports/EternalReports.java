@@ -107,7 +107,7 @@ public class EternalReports extends JavaPlugin {
             .register();
 
         this.enableMetrics();
-        final long millis = started.elapsed(TimeUnit.MILLISECONDS);
+        long millis = started.elapsed(TimeUnit.MILLISECONDS);
         this.getLogger().info("EternalReports loaded in " + millis + "ms");
     }
 
