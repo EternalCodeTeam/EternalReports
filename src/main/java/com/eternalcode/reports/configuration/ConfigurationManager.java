@@ -9,8 +9,7 @@ import java.util.Set;
 
 public class ConfigurationManager {
 
-    private final Cdn cdn = CdnFactory
-        .createYamlLike()
+    private final Cdn cdn = CdnFactory.createYamlLike()
         .getSettings()
         .build();
 

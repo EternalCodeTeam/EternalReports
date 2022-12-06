@@ -29,10 +29,15 @@ public class PluginConfiguration implements ReloadableConfig {
         @Description({
             "# Discord message configuration", "# If You want to disable this feature, set enabled to false"
         })
+        @Description("Should the discord feature be enabled?")
         public boolean enabled = true;
+        @Description("The webhook URL.")
         public String webhookUrl = "https://discord.com";
+        @Description("The webhook profile image.")
         public String profileImage = "";
+        @Description("The webhook author name")
         public String authorName = "";
+        @Description("The webhook embed color.")
         public String color = "#fff";
 
         @Description({
