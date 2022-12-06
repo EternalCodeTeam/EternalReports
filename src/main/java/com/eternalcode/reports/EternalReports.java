@@ -19,6 +19,8 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SingleLineChart;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -42,6 +44,7 @@ public class EternalReports extends JavaPlugin {
     private BukkitAudiences audiences;
 
     private Statistics statistics;
+    private Server server;
 
     @Override
     public void onEnable() {
@@ -63,13 +66,14 @@ public class EternalReports extends JavaPlugin {
         this.messages = this.messagesManager.load(new GlobalMessages());
         this.statistics = this.configurationManager.load(new Statistics());
         this.audiences = BukkitAudiences.create(this);
+        this.server = Bukkit.getServer();
         this.notificationManager = new NotificationManager(this.audiences, this.miniMessage);
 
         this.liteCommands = LiteBukkitAdventurePlatformFactory.builder(this.getServer(), "eternal-reports", this.audiences, this.miniMessage)
             .argument(Player.class, new BukkitPlayerArgument<>(this.getServer(), this.miniMessage.deserialize(this.messages.userMessages.userNotFound)))
             .contextualBind(Player.class, new BukkitOnlyPlayerContextual<>(this.miniMessage.deserialize(this.messages.userMessages.onlyUserCommand)))
             .invalidUsageHandler(new InvalidUsage(this.notificationManager, this.messages))
-            .commandInstance(new ReportCommand(this.statistics, this.messages, this.notificationManager, this.pluginConfiguration, this.configurationManager))
+            .commandInstance(new ReportCommand(this.statistics, this.messages, this.notificationManager, this.pluginConfiguration, this.configurationManager, this.server))
             .commandInstance(new ReloadConfiguration(this.configurationManager, this.messagesManager, this.notificationManager))
             .register();
         this.enableMetrics();
