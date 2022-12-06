@@ -4,20 +4,20 @@ import com.eternalcode.reports.message.GlobalMessages;
 import com.eternalcode.reports.util.ChatUtil;
 import com.eternalcode.reports.util.NotificationManager;
 import dev.rollczi.litecommands.command.LiteInvocation;
+import dev.rollczi.litecommands.handle.InvalidUsageHandler;
 import dev.rollczi.litecommands.schematic.Schematic;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class InvalidUsageHandler implements
-    dev.rollczi.litecommands.handle.InvalidUsageHandler<CommandSender> {
+public class InvalidUsage implements InvalidUsageHandler<CommandSender> {
 
     private NotificationManager notificationManager;
     private GlobalMessages globalMessages;
 
-    public InvalidUsageHandler(NotificationManager notificationManager, GlobalMessages globalMessages) {
-        
+    public InvalidUsage(NotificationManager notificationManager, GlobalMessages globalMessages) {
+
         this.notificationManager = notificationManager;
         this.globalMessages = globalMessages;
     }

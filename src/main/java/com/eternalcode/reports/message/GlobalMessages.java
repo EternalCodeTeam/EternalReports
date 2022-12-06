@@ -46,7 +46,7 @@ public class GlobalMessages implements ReloadableConfig {
 
 
     @Override
-    public Resource resource(final File folder) {
+    public Resource resource(File folder) {
         return Source.of(folder, "messages.yml");
     }
 }

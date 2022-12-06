@@ -11,7 +11,7 @@ import dev.rollczi.litecommands.argument.Name;
 import dev.rollczi.litecommands.argument.joiner.Joiner;
 import dev.rollczi.litecommands.command.execute.Execute;
 import dev.rollczi.litecommands.command.route.Route;
-import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
 @Route(name = "report", aliases = { "zglos" })
@@ -26,12 +26,15 @@ public class ReportCommand {
     private PluginConfiguration pluginConfiguration;
     private ConfigurationManager configurationManager;
 
+    private Server server;
+
     public ReportCommand(
         Statistics statistics,
         GlobalMessages messages,
         NotificationManager notificationManager,
         PluginConfiguration pluginConfiguration,
-        ConfigurationManager configurationManager
+        ConfigurationManager configurationManager,
+        Server server
     ) {
         this.statistics = statistics;
         this.messages = messages;
@@ -39,6 +42,7 @@ public class ReportCommand {
         this.notificationManager = notificationManager;
         this.pluginConfiguration = pluginConfiguration;
         this.configurationManager = configurationManager;
+        this.server = server;
     }
 
     @Execute(min = 2)

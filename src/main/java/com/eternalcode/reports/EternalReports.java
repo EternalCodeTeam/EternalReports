@@ -2,7 +2,7 @@ package com.eternalcode.reports;
 
 import com.eternalcode.reports.command.ReportCommand;
 import com.eternalcode.reports.command.administrator.ReloadConfiguration;
-import com.eternalcode.reports.command.handlers.InvalidUsageHandler;
+import com.eternalcode.reports.command.handlers.InvalidUsage;
 import com.eternalcode.reports.configuration.ConfigurationManager;
 import com.eternalcode.reports.configuration.PluginConfiguration;
 import com.eternalcode.reports.data.Statistics;
@@ -28,9 +28,9 @@ import java.util.concurrent.TimeUnit;
 
 public class EternalReports extends JavaPlugin {
 
-    private LiteCommands<CommandSender> liteCommands;
-    public static EternalReports eternalReports;
+    public static EternalReports instance;
 
+    private LiteCommands<CommandSender> liteCommands;
 
     private ConfigurationManager configurationManager;
     private ConfigService messagesManager;
@@ -48,7 +48,7 @@ public class EternalReports extends JavaPlugin {
         this.getLogger().info("Enabling EternalReports...");
         Stopwatch started = Stopwatch.createStarted();
 
-        eternalReports = this;
+        instance = this;
         this.miniMessage = MiniMessage
             .builder()
             .tags(TagResolver.standard())
@@ -65,47 +65,13 @@ public class EternalReports extends JavaPlugin {
         this.audiences = BukkitAudiences.create(this);
         this.notificationManager = new NotificationManager(this.audiences, this.miniMessage);
 
-        this.liteCommands = LiteBukkitAdventurePlatformFactory
-            .builder(
-                this.getServer(),
-                "eternal-reports",
-                this.audiences,
-                this.miniMessage
-            )
-            .argument(
-                Player.class,
-                new BukkitPlayerArgument<>(
-                    this.getServer(),
-                    this.miniMessage.deserialize(this.messages.userMessages.userNotFound)
-                )
-            )
-            .contextualBind(
-                Player.class,
-                new BukkitOnlyPlayerContextual<>(
-                    this.miniMessage.deserialize(this.messages.userMessages.onlyUserCommand)
-                )
-            )
-            .invalidUsageHandler(
-                new InvalidUsageHandler(this.notificationManager, this.messages)
-            )
-            .commandInstance(
-                new ReportCommand(
-                    this.statistics,
-                    this.messages,
-                    this.notificationManager,
-                    this.pluginConfiguration,
-                    this.configurationManager
-                )
-            )
-            .commandInstance(
-                new ReloadConfiguration(
-                    this.configurationManager,
-                    this.messagesManager,
-                    this.notificationManager
-                )
-            )
+        this.liteCommands = LiteBukkitAdventurePlatformFactory.builder(this.getServer(), "eternal-reports", this.audiences, this.miniMessage)
+            .argument(Player.class, new BukkitPlayerArgument<>(this.getServer(), this.miniMessage.deserialize(this.messages.userMessages.userNotFound)))
+            .contextualBind(Player.class, new BukkitOnlyPlayerContextual<>(this.miniMessage.deserialize(this.messages.userMessages.onlyUserCommand)))
+            .invalidUsageHandler(new InvalidUsage(this.notificationManager, this.messages))
+            .commandInstance(new ReportCommand(this.statistics, this.messages, this.notificationManager, this.pluginConfiguration, this.configurationManager))
+            .commandInstance(new ReloadConfiguration(this.configurationManager, this.messagesManager, this.notificationManager))
             .register();
-
         this.enableMetrics();
         long millis = started.elapsed(TimeUnit.MILLISECONDS);
         this.getLogger().info("EternalReports loaded in " + millis + "ms");
@@ -113,7 +79,10 @@ public class EternalReports extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        this.liteCommands.getPlatform().unregisterAll();
+        if (this.liteCommands.getPlatform() != null) {
+            this.liteCommands.getPlatform().unregisterAll();
+        }
+
         if (this.audiences != null) {
             this.audiences.close();
             this.audiences = null;
@@ -121,7 +90,7 @@ public class EternalReports extends JavaPlugin {
     }
 
     private void enableMetrics() {
-        final Metrics metrics = new Metrics(this, 16483);
+        Metrics metrics = new Metrics(this, 16483);
         metrics.addCustomChart(new SingleLineChart("users_reported_globally", () -> this.statistics.getReports()));
     }
 
@@ -130,7 +99,7 @@ public class EternalReports extends JavaPlugin {
     }
 
     public static EternalReports getInstance() {
-        return eternalReports;
+        return instance;
     }
 
     public MiniMessage getMiniMessage() {

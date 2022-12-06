@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 
 @Route(name = "er-reload", aliases = { "eternalreports-reload" })
 public class ReloadConfiguration {
+
     private ConfigurationManager configurationManager;
     private ConfigService messagesManager;
     private NotificationManager notificationManager;
@@ -21,7 +22,7 @@ public class ReloadConfiguration {
     }
 
     @Permission("eternalcode.report.reload")
-    @Execute()
+    @Execute
     public void execute(Player player) {
         this.configurationManager.reload();
         this.messagesManager.reload();
