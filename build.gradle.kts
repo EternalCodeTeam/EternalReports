@@ -4,7 +4,7 @@ plugins {
     id("java-library")
     id("com.github.johnrengelman.shadow") version "7.1.2"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
-    id("xyz.jpenilla.run-paper") version "1.0.6"
+    id("xyz.jpenilla.run-paper") version "2.0.0"
 }
 
 group = "com.eternalcode"
@@ -26,10 +26,10 @@ dependencies {
 
     // Kyori Adventure
     implementation("net.kyori:adventure-platform-bukkit:4.1.2")
-    implementation("net.kyori:adventure-text-minimessage:4.11.0")
+    implementation("net.kyori:adventure-text-minimessage:4.12.0")
 
     // LiteCommands
-    implementation("dev.rollczi.litecommands:bukkit-adventure:2.6.0")
+    implementation("dev.rollczi.litecommands:bukkit-adventure:2.7.0")
 
     // Cdn
     implementation("net.dzikoysk:cdn:1.14.1")
@@ -46,7 +46,7 @@ tasks.withType<JavaCompile> {
 }
 
 bukkit {
-    main = "com.eternalcode.eternalreports.EternalReports"
+    main = "com.eternalcode.reports.EternalReports"
     apiVersion = "1.13"
     prefix = "EternalReports"
     author = "EternalCode"
@@ -81,7 +81,7 @@ tasks.withType<ShadowJar> {
     mergeServiceFiles()
     minimize()
 
-    val prefix = "com.eternalcode.eternalreports.libs"
+    val prefix = "com.eternalcode.reports.libs"
 
     listOf(
         "panda",
@@ -90,7 +90,7 @@ tasks.withType<ShadowJar> {
         "net.dzikoysk",
         "net.kyori",
         "dev.rollczi"
-    ).forEach{pack ->
+    ).forEach { pack ->
         relocate(pack, "$prefix.$pack")
     }
 }
