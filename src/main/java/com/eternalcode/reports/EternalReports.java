@@ -6,6 +6,7 @@ import com.eternalcode.reports.command.handler.InvalidUsage;
 import com.eternalcode.reports.configuration.ConfigurationManager;
 import com.eternalcode.reports.configuration.MessagesConfiguration;
 import com.eternalcode.reports.configuration.PluginConfiguration;
+import com.eternalcode.reports.creator.DiscordWebHookCreator;
 import com.eternalcode.reports.legacy.LegacyColorProcessor;
 import com.eternalcode.reports.notification.NotificationManager;
 import com.eternalcode.reports.statistics.StatisticsConfiguration;
@@ -30,17 +31,16 @@ import java.util.concurrent.TimeUnit;
 
 public class EternalReports extends JavaPlugin {
 
-    private ConfigurationManager configurationManager;
-    private MessagesConfiguration messagesConfiguration;
-    private PluginConfiguration pluginConfiguration;
-
     private AudienceProvider audiences;
     private MiniMessage miniMessage;
 
     private NotificationManager notificationManager;
-
-    private StatisticsConfiguration statisticsConfiguration;
     private StatisticsManager statisticsManager;
+
+    private ConfigurationManager configurationManager;
+    private MessagesConfiguration messagesConfiguration;
+    private PluginConfiguration pluginConfiguration;
+    private StatisticsConfiguration statisticsConfiguration;
 
     private LiteCommands<CommandSender> liteCommands;
 
@@ -56,9 +56,9 @@ public class EternalReports extends JavaPlugin {
 
         this.audiences = BukkitAudiences.create(this);
         this.miniMessage = MiniMessage.builder()
-                .postProcessor(new LegacyColorProcessor())
-                .tags(TagResolver.standard())
-                .build();
+            .postProcessor(new LegacyColorProcessor())
+            .tags(TagResolver.standard())
+            .build();
 
         this.notificationManager = new NotificationManager(this.audiences, this.miniMessage);
 
@@ -66,12 +66,12 @@ public class EternalReports extends JavaPlugin {
         this.statisticsManager = new StatisticsManager(this.configurationManager, this.statisticsConfiguration);
 
         this.liteCommands = LiteBukkitAdventurePlatformFactory.builder(this.getServer(), "eternal-reports", this.audiences, this.miniMessage)
-                .argument(Player.class, new BukkitPlayerArgument<>(this.getServer(), this.miniMessage.deserialize(this.messagesConfiguration.userMessages.userNotFound)))
-                .contextualBind(Player.class, new BukkitOnlyPlayerContextual<>(this.miniMessage.deserialize(this.messagesConfiguration.userMessages.onlyUserCommand)))
-                .invalidUsageHandler(new InvalidUsage(this.notificationManager, this.messagesConfiguration))
-                .commandInstance(new ReportCommand(this.statisticsConfiguration, this.messagesConfiguration, this.notificationManager, this.pluginConfiguration, this.configurationManager, server))
-                .commandInstance(new ReloadConfiguration(this.configurationManager, this.messagesConfiguration, this.notificationManager))
-                .register();
+            .argument(Player.class, new BukkitPlayerArgument<>(this.getServer(), this.miniMessage.deserialize(this.messagesConfiguration.userMessages.userNotFound)))
+            .contextualBind(Player.class, new BukkitOnlyPlayerContextual<>(this.miniMessage.deserialize(this.messagesConfiguration.userMessages.onlyUserCommand)))
+            .invalidUsageHandler(new InvalidUsage(this.notificationManager, this.messagesConfiguration))
+            .commandInstance(new ReportCommand(this.statisticsManager, this.statisticsConfiguration, this.messagesConfiguration, this.notificationManager, new DiscordWebHookCreator(this.pluginConfiguration), this.pluginConfiguration, this.configurationManager, server))
+            .commandInstance(new ReloadConfiguration(this.configurationManager, this.notificationManager))
+            .register();
 
         this.enableMetrics();
         long millis = started.elapsed(TimeUnit.MILLISECONDS);

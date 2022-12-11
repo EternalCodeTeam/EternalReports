@@ -25,8 +25,8 @@ public class InvalidUsage implements InvalidUsageHandler<CommandSender> {
 
         if (schematics.size() == 1) {
             this.notificationManager.announceMessage(
-                    sender,
-                    this.messagesConfiguration.userMessages.invalidUsage.replace("{USAGE}", schematics.get(0))
+                sender,
+                this.messagesConfiguration.userMessages.invalidUsage.replace("{USAGE}", schematics.get(0))
             );
             return;
         }

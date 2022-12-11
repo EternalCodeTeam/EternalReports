@@ -24,6 +24,11 @@ public class PluginConfiguration implements ReloadableConfig {
     })
     public Discord discordSettings = new Discord();
 
+    @Override
+    public Resource resource(File folder) {
+        return Source.of(folder, "config.yml");
+    }
+
     @Contextual
     public static class Discord {
 
@@ -56,10 +61,5 @@ public class PluginConfiguration implements ReloadableConfig {
             "#"
         })
         public List<String> messageContent = Arrays.asList("Gracz {REPORTED_BY} zgłosił gracza {USER}", "Powód {REASON}");
-    }
-    
-    @Override
-    public Resource resource(File folder) {
-        return Source.of(folder, "config.yml");
     }
 }
