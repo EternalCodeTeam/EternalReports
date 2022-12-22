@@ -1,15 +1,15 @@
 package com.eternalcode.reports;
 
-import com.eternalcode.reports.command.ReportCommand;
-import com.eternalcode.reports.command.administrator.ReloadConfiguration;
-import com.eternalcode.reports.command.handler.InvalidUsage;
+import com.eternalcode.reports.command.InvalidCommandUsage;
 import com.eternalcode.reports.configuration.ConfigurationManager;
-import com.eternalcode.reports.configuration.MessagesConfiguration;
-import com.eternalcode.reports.configuration.PluginConfiguration;
+import com.eternalcode.reports.configuration.implementation.PluginConfiguration;
 import com.eternalcode.reports.legacy.LegacyColorProcessor;
-import com.eternalcode.reports.notification.NotificationManager;
-import com.eternalcode.reports.statistics.StatisticsConfiguration;
-import com.eternalcode.reports.statistics.StatisticsManager;
+import com.eternalcode.reports.notification.NotificationAnnouncer;
+import com.eternalcode.reports.report.ReportAnnouncer;
+import com.eternalcode.reports.report.command.ReportCommand;
+import com.eternalcode.reports.report.discord.DiscordReportWebHook;
+import com.eternalcode.reports.report.statistics.StatisticsConfiguration;
+import com.eternalcode.reports.report.statistics.StatisticsService;
 import com.google.common.base.Stopwatch;
 import dev.rollczi.litecommands.LiteCommands;
 import dev.rollczi.litecommands.bukkit.adventure.platform.LiteBukkitAdventurePlatformFactory;
@@ -30,50 +30,51 @@ import java.util.concurrent.TimeUnit;
 
 public class EternalReports extends JavaPlugin {
 
-    private ConfigurationManager configurationManager;
-    private MessagesConfiguration messagesConfiguration;
-    private PluginConfiguration pluginConfiguration;
-
-    private AudienceProvider audiences;
+    private AudienceProvider audienceProvider;
     private MiniMessage miniMessage;
 
-    private NotificationManager notificationManager;
+    private NotificationAnnouncer notificationAnnouncer;
+    private StatisticsService statisticsService;
+    private ReportAnnouncer reportAnnouncer;
+    private DiscordReportWebHook discordReportWebHook;
 
+    private ConfigurationManager configurationManager;
+    private PluginConfiguration pluginConfiguration;
     private StatisticsConfiguration statisticsConfiguration;
-    private StatisticsManager statisticsManager;
 
     private LiteCommands<CommandSender> liteCommands;
 
     @Override
     public void onEnable() {
-        this.getLogger().info("Enabling EternalReports...");
         Stopwatch started = Stopwatch.createStarted();
         Server server = this.getServer();
 
         this.configurationManager = new ConfigurationManager(this.getDataFolder());
-        this.messagesConfiguration = new MessagesConfiguration();
         this.pluginConfiguration = this.configurationManager.load(new PluginConfiguration());
-
-        this.audiences = BukkitAudiences.create(this);
-        this.miniMessage = MiniMessage.builder()
-                .postProcessor(new LegacyColorProcessor())
-                .tags(TagResolver.standard())
-                .build();
-
-        this.notificationManager = new NotificationManager(this.audiences, this.miniMessage);
-
         this.statisticsConfiguration = this.configurationManager.load(new StatisticsConfiguration());
-        this.statisticsManager = new StatisticsManager(this.configurationManager, this.statisticsConfiguration);
 
-        this.liteCommands = LiteBukkitAdventurePlatformFactory.builder(this.getServer(), "eternal-reports", this.audiences, this.miniMessage)
-                .argument(Player.class, new BukkitPlayerArgument<>(this.getServer(), this.miniMessage.deserialize(this.messagesConfiguration.userMessages.userNotFound)))
-                .contextualBind(Player.class, new BukkitOnlyPlayerContextual<>(this.miniMessage.deserialize(this.messagesConfiguration.userMessages.onlyUserCommand)))
-                .invalidUsageHandler(new InvalidUsage(this.notificationManager, this.messagesConfiguration))
-                .commandInstance(new ReportCommand(this.statisticsConfiguration, this.messagesConfiguration, this.notificationManager, this.pluginConfiguration, this.configurationManager, server))
-                .commandInstance(new ReloadConfiguration(this.configurationManager, this.messagesConfiguration, this.notificationManager))
-                .register();
+        this.audienceProvider = BukkitAudiences.create(this);
+        this.miniMessage = MiniMessage.builder()
+            .postProcessor(new LegacyColorProcessor())
+            .tags(TagResolver.standard())
+            .build();
 
-        this.enableMetrics();
+        this.notificationAnnouncer = new NotificationAnnouncer(this.audienceProvider, this.miniMessage);
+        this.statisticsService = new StatisticsService(this.configurationManager, this.statisticsConfiguration);
+        this.discordReportWebHook = new DiscordReportWebHook(this.pluginConfiguration);
+        this.reportAnnouncer = new ReportAnnouncer(this.notificationAnnouncer, this.pluginConfiguration, this.discordReportWebHook, this.statisticsService, server);
+
+        this.liteCommands = LiteBukkitAdventurePlatformFactory.builder(this.getServer(), "eternalreports", this.audienceProvider, this.miniMessage)
+            .argument(Player.class, new BukkitPlayerArgument<>(this.getServer(), this.miniMessage.deserialize(this.pluginConfiguration.userMessages.userNotFound)))
+            .contextualBind(Player.class, new BukkitOnlyPlayerContextual<>(this.miniMessage.deserialize(this.pluginConfiguration.userMessages.onlyUserCommand)))
+            .invalidUsageHandler(new InvalidCommandUsage(this.notificationAnnouncer, this.pluginConfiguration))
+
+            .commandInstance(new ReportCommand(this.pluginConfiguration, this.notificationAnnouncer, this.configurationManager, this.reportAnnouncer))
+            .register();
+
+        Metrics metrics = new Metrics(this, 16483);
+        metrics.addCustomChart(new SingleLineChart("users_reported_globally", () -> this.statisticsConfiguration.reports));
+
         long millis = started.elapsed(TimeUnit.MILLISECONDS);
         this.getLogger().info("EternalReports loaded in " + millis + "ms");
     }
@@ -84,50 +85,8 @@ public class EternalReports extends JavaPlugin {
             this.liteCommands.getPlatform().unregisterAll();
         }
 
-        if (this.audiences != null) {
-            this.audiences.close();
-            this.audiences = null;
+        if (this.audienceProvider != null) {
+            this.audienceProvider.close();
         }
-    }
-
-    private void enableMetrics() {
-        Metrics metrics = new Metrics(this, 16483);
-        metrics.addCustomChart(new SingleLineChart("users_reported_globally", () -> this.statisticsConfiguration.reports));
-    }
-
-    public ConfigurationManager getConfigurationManager() {
-        return this.configurationManager;
-    }
-
-    public MessagesConfiguration getMessagesConfiguration() {
-        return this.messagesConfiguration;
-    }
-
-    public PluginConfiguration getPluginConfiguration() {
-        return this.pluginConfiguration;
-    }
-
-    public AudienceProvider getAudiences() {
-        return this.audiences;
-    }
-
-    public MiniMessage getMiniMessage() {
-        return this.miniMessage;
-    }
-
-    public NotificationManager getNotificationManager() {
-        return this.notificationManager;
-    }
-
-    public StatisticsConfiguration getStatisticsConfiguration() {
-        return this.statisticsConfiguration;
-    }
-
-    public StatisticsManager getStatisticsManager() {
-        return this.statisticsManager;
-    }
-
-    public LiteCommands<CommandSender> getLiteCommands() {
-        return this.liteCommands;
     }
 }
