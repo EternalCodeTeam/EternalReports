@@ -1,13 +1,13 @@
-package com.eternalcode.reports.statistics;
+package com.eternalcode.reports.report.statistics;
 
 import com.eternalcode.reports.configuration.ConfigurationManager;
 
-public class StatisticsManager {
+public class StatisticsService {
 
     private final ConfigurationManager configurationManager;
     private final StatisticsConfiguration statisticsConfiguration;
 
-    public StatisticsManager(ConfigurationManager configurationManager, StatisticsConfiguration statisticsConfiguration) {
+    public StatisticsService(ConfigurationManager configurationManager, StatisticsConfiguration statisticsConfiguration) {
         this.configurationManager = configurationManager;
         this.statisticsConfiguration = statisticsConfiguration;
     }

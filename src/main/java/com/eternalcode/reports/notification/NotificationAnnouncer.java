@@ -8,11 +8,11 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class NotificationManager {
+public class NotificationAnnouncer {
     private final AudienceProvider audienceProvider;
     private final MiniMessage miniMessage;
 
-    public NotificationManager(AudienceProvider audienceProvider, MiniMessage miniMessage) {
+    public NotificationAnnouncer(AudienceProvider audienceProvider, MiniMessage miniMessage) {
         this.audienceProvider = audienceProvider;
         this.miniMessage = miniMessage;
     }

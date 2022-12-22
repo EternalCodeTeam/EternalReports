@@ -1,4 +1,4 @@
-package com.eternalcode.reports.statistics;
+package com.eternalcode.reports.report.statistics;
 
 import com.eternalcode.reports.configuration.ReloadableConfig;
 import net.dzikoysk.cdn.source.Resource;

@@ -2,7 +2,11 @@
 
 ### 📢 Report a player who is rude or who uses cheats etc.
 
-## Permissions
+#### Remember that this plugin was created by our students, and it probably has bugs, the code is still weak and underdeveloped!
 
-* eternalcode.report.recieve - Recieve reports in-game
-* eternalcode.report.reloadConfiguration - Reload configuration and messages ingame
+<details><summary>Permission</summary>
+
+* eternalreports.recieve - Receive reports in-game
+* eternalreports.reload - Reload configuration and messages in-game
+
+</details>
