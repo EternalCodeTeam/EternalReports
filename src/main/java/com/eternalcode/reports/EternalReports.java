@@ -1,7 +1,6 @@
 package com.eternalcode.reports;
 
 import com.eternalcode.reports.command.ReportCommand;
-import com.eternalcode.reports.command.administrator.ReloadConfiguration;
 import com.eternalcode.reports.command.handler.InvalidUsage;
 import com.eternalcode.reports.configuration.ConfigurationManager;
 import com.eternalcode.reports.configuration.MessagesConfiguration;
@@ -70,7 +69,6 @@ public class EternalReports extends JavaPlugin {
             .contextualBind(Player.class, new BukkitOnlyPlayerContextual<>(this.miniMessage.deserialize(this.messagesConfiguration.userMessages.onlyUserCommand)))
             .invalidUsageHandler(new InvalidUsage(this.notificationManager, this.messagesConfiguration))
             .commandInstance(new ReportCommand(this.statisticsManager, this.statisticsConfiguration, this.messagesConfiguration, this.notificationManager, new DiscordWebHookCreator(this.pluginConfiguration), this.pluginConfiguration, this.configurationManager, server))
-            .commandInstance(new ReloadConfiguration(this.configurationManager, this.notificationManager))
             .register();
 
         this.enableMetrics();
@@ -86,7 +84,6 @@ public class EternalReports extends JavaPlugin {
 
         if (this.audiences != null) {
             this.audiences.close();
-            this.audiences = null;
         }
     }
 

@@ -11,11 +11,12 @@ import dev.rollczi.litecommands.argument.Arg;
 import dev.rollczi.litecommands.argument.Name;
 import dev.rollczi.litecommands.argument.joiner.Joiner;
 import dev.rollczi.litecommands.command.execute.Execute;
+import dev.rollczi.litecommands.command.permission.Permission;
 import dev.rollczi.litecommands.command.route.Route;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
-@Route(name = "report", aliases = {"zglos"})
+@Route(name = "report", aliases = { "zglos" })
 public class ReportCommand {
     private final StatisticsManager statisticsManager;
     private final StatisticsConfiguration statisticsConfiguration;
@@ -68,6 +69,13 @@ public class ReportCommand {
 
         this.statisticsManager.addReport();
         this.configurationManager.save(this.statisticsConfiguration);
+    }
+
+    @Execute(route = "admin reload")
+    @Permission("eternalcode.report.reload")
+    public void execute(Player player) {
+        this.configurationManager.reload();
+        this.notificationManager.announceMessage(player.getUniqueId(), "<b><dark_red>[ EternalReports ]</dark_red> <white>-></white> <green>Configuration and messages reloaded!</green></b>");
     }
 
 }
